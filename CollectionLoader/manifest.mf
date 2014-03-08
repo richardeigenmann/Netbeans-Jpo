@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.dyndns.richinnet.netbeansjpo
+OpenIDE-Module-Localizing-Bundle: org/dyndns/richinnet/netbeansjpo/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
