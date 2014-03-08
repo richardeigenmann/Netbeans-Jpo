@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.richinet.dyndns.netbeansjpo.jpo</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>jpo.TagCloud</package>
+                <package>jpo.TagCloud.samples</package>
+                <package>jpo.dataModel</package>
+                <package>jpo.export</package>
+                <package>jpo.gui</package>
+                <package>jpo.gui.swing</package>
+                <package>jpotestground</package>
+                <package>webserver</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/jpo-0.11.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jpo-0.11.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
