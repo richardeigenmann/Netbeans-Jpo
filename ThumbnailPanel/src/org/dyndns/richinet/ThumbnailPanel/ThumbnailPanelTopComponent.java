@@ -6,8 +6,10 @@
 package org.dyndns.richinet.ThumbnailPanel;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import jpo.gui.ThumbnailPanelController;
+import org.dyndns.richinet.JpoApi.CentralLookup;
 import org.dyndns.richinet.JpoApi.JpoEvent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -44,7 +46,7 @@ import org.openide.windows.TopComponent;
     "HINT_ThumbnailPanelTopComponent=This is a ThumbnailPanel window"
 } )
 //@ServiceProvider( service = JpoNodeSelectionListener.class )
-public final class ThumbnailPanelTopComponent extends TopComponent implements LookupListener {
+public final class ThumbnailPanelTopComponent extends TopComponent {
 
     private static final Logger LOGGER = Logger.getLogger( ThumbnailPanelTopComponent.class.getName() );
 
@@ -86,20 +88,22 @@ public final class ThumbnailPanelTopComponent extends TopComponent implements Lo
     private javax.swing.JScrollPane rootJScrollPane;
     // End of variables declaration//GEN-END:variables
 
-    private Lookup.Result<JpoEvent> result = null;
+    private Lookup.Result jpoEvent = null;
 
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult( JpoEvent.class );
-        result.addLookupListener( this );
+        Lookup.Template template = new Lookup.Template( JpoEvent.class );
+
+        CentralLookup cl = CentralLookup.getDefault();
+        jpoEvent = cl.lookup( template );
+        jpoEvent.addLookupListener( new UserInformationListener() );
+
     }
 
     @Override
     public void componentClosed() {
-        result.removeLookupListener( this );
     }
 
-    
     void writeProperties( java.util.Properties p ) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -112,14 +116,33 @@ public final class ThumbnailPanelTopComponent extends TopComponent implements Lo
         // TODO read your settings according to their version
     }
 
-    @Override
-    public void resultChanged( LookupEvent le ) {
-        Collection<? extends JpoEvent> allEvents = result.allInstances();
-        if (!allEvents.isEmpty()) {
-            JpoEvent event = allEvents.iterator().next();
-            LOGGER.info("resultChanged received: " + event.toString());
-        } else {
+//    @Override
+//    public void resultChanged( LookupEvent le ) {
+//        LOGGER.info("resultChanged fired" + le.toString());
+//        Collection<? extends CentralLookup> allEvents = result.allInstances();
+//        if (!allEvents.isEmpty()) {
+//            CentralLookup event = allEvents.iterator().next();
+//            LOGGER.info("resultChanged received: " + event.toString());
+//        } else {
+//        }
+//    }
+    private class UserInformationListener implements LookupListener {
+
+        public void resultChanged( LookupEvent evt ) {
+            Object o = evt.getSource();
+            if ( o != null ) {
+                Lookup.Result r = (Lookup.Result) o;
+                Collection infos = r.allInstances();
+                if ( infos.isEmpty() ) {
+                    LOGGER.info( "Empty result set" );
+                } else {
+                    Iterator it = infos.iterator();
+                    while ( it.hasNext() ) {
+                        Object obj = it.next();
+                        LOGGER.info( "Jpo Event received: " + obj.toString() );
+                    }
+                }
+            }
         }
     }
-
 }
