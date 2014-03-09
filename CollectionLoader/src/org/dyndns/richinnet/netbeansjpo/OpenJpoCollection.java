@@ -44,6 +44,7 @@ public final class OpenJpoCollection implements ActionListener {
 
     public OpenJpoCollection( fileHandlerDataObject context ) {
         this.context = context;
+        context.associateLookup();
     }
 
     @Override

@@ -2,6 +2,10 @@
 # NetBeans specific #
 nbproject/private/
 CollectionLoader/nbproject/private/
+EventEditor/nbproject/private/
+JpoAPI/nbproject/private/
+ThumbnailPanel/nbproject/private/
+
 build/
 nbbuild/
 dist/
