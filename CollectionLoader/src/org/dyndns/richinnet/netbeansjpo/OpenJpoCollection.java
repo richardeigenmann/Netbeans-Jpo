@@ -9,16 +9,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
+import java.util.logging.Logger;
 import jpo.dataModel.Settings;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import org.dyndns.richinet.JpoApi.JpoEvent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 @ActionID(
          category = "File",
@@ -31,7 +36,11 @@ import org.openide.util.NbBundle.Messages;
 @Messages( "CTL_OpenJpoCollection=Open JPO Collection" )
 public final class OpenJpoCollection implements ActionListener {
 
+    private static final Logger LOGGER = Logger.getLogger( OpenJpoCollection.class.getName() );
+
     private final fileHandlerDataObject context;
+
+    private final InstanceContent content = new InstanceContent();
 
     public OpenJpoCollection( fileHandlerDataObject context ) {
         this.context = context;
@@ -43,11 +52,13 @@ public final class OpenJpoCollection implements ActionListener {
         File xmlFile = FileUtil.toFile( f );
         try {
             Settings.pictureCollection.fileLoad( xmlFile );
-            NotifyDescriptor nd = new NotifyDescriptor.Message( "File loading done." );
-            DialogDisplayer.getDefault().notify( nd );
+            LOGGER.info( "Loaded the file publishing the event" );
+            JpoEvent obj = new JpoEvent();
+            content.set( Collections.singleton( obj ), null );
         } catch ( FileNotFoundException ex ) {
             Exceptions.printStackTrace( ex );
         }
 
     }
+
 }

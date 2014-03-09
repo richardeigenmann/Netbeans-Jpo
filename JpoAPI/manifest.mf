@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.dyndns.richinet.JpoApi
+OpenIDE-Module-Localizing-Bundle: org/dyndns/richinet/JpoApi/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
