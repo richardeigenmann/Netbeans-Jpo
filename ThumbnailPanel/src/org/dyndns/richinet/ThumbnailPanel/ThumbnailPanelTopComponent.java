@@ -8,9 +8,10 @@ package org.dyndns.richinet.ThumbnailPanel;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Logger;
+import jpo.dataModel.GroupNavigator;
 import jpo.gui.ThumbnailPanelController;
 import org.dyndns.richinet.JpoApi.CentralLookup;
-import org.dyndns.richinet.JpoApi.JpoEvent;
+import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -18,16 +19,15 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
  */
-@ConvertAsProperties(
-         dtd = "-//org.dyndns.richinet.ThumbnailPanel//ThumbnailPanel//EN",
-        autostore = false
-)
+//@ConvertAsProperties(
+//         dtd = "-//org.dyndns.richinet.ThumbnailPanel//ThumbnailPanel//EN",
+//        autostore = false
+//)
 @TopComponent.Description(
          preferredID = "ThumbnailPanelTopComponent",
         //iconBase="SET/PATH/TO/ICON/HERE", 
@@ -37,8 +37,8 @@ import org.openide.windows.TopComponent;
 @ActionID( category = "Window", id = "org.dyndns.richinet.ThumbnailPanel.ThumbnailPanelTopComponent" )
 @ActionReference( path = "Menu/Window" /*, position = 333 */ )
 @TopComponent.OpenActionRegistration(
-         displayName = "#CTL_ThumbnailPanelAction",
-        preferredID = "ThumbnailPanelTopComponent"
+         displayName = "#CTL_ThumbnailPanelAction"
+//preferredID = "ThumbnailPanelTopComponent"
 )
 @Messages( {
     "CTL_ThumbnailPanelAction=ThumbnailPanel",
@@ -47,11 +47,11 @@ import org.openide.windows.TopComponent;
 } )
 //@ServiceProvider( service = JpoNodeSelectionListener.class )
 public final class ThumbnailPanelTopComponent extends TopComponent {
-
+    
     private static final Logger LOGGER = Logger.getLogger( ThumbnailPanelTopComponent.class.getName() );
-
+    
     private final ThumbnailPanelController myPanelController;
-
+    
     public ThumbnailPanelTopComponent() {
         LOGGER.severe( "Creating a ThumbnailPanelTopComponent" );
         //Thread.dumpStack();
@@ -59,7 +59,7 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
         myPanelController = new ThumbnailPanelController( rootJScrollPane );
         setName( Bundle.CTL_ThumbnailPanelTopComponent() );
         setToolTipText( Bundle.HINT_ThumbnailPanelTopComponent() );
-
+        
     }
 
     /**
@@ -89,57 +89,48 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
 
     private Lookup.Result jpoEvent = null;
-
+    
     @Override
     public void componentOpened() {
-        Lookup.Template template = new Lookup.Template( JpoEvent.class );
-
+        Lookup.Template template = new Lookup.Template( JpoNodeSelectionEvent.class );
+        
         CentralLookup cl = CentralLookup.getDefault();
         jpoEvent = cl.lookup( template );
-        jpoEvent.addLookupListener( new UserInformationListener() );
-
+        jpoEvent.addLookupListener( new JpoNodeSelectionLookupListener() );
+        
     }
-
+    
     @Override
     public void componentClosed() {
     }
-
+    
     void writeProperties( java.util.Properties p ) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty( "version", "1.0" );
         // TODO store your settings
     }
-
+    
     void readProperties( java.util.Properties p ) {
         String version = p.getProperty( "version" );
         // TODO read your settings according to their version
     }
-
-//    @Override
-//    public void resultChanged( LookupEvent le ) {
-//        LOGGER.info("resultChanged fired" + le.toString());
-//        Collection<? extends CentralLookup> allEvents = result.allInstances();
-//        if (!allEvents.isEmpty()) {
-//            CentralLookup event = allEvents.iterator().next();
-//            LOGGER.info("resultChanged received: " + event.toString());
-//        } else {
-//        }
-//    }
-    private class UserInformationListener implements LookupListener {
-
-        public void resultChanged( LookupEvent evt ) {
-            Object o = evt.getSource();
-            if ( o != null ) {
-                Lookup.Result r = (Lookup.Result) o;
-                Collection infos = r.allInstances();
-                if ( infos.isEmpty() ) {
+    
+    private class JpoNodeSelectionLookupListener implements LookupListener {
+        
+        @Override
+        public void resultChanged( LookupEvent event ) {
+            Object object = event.getSource();
+            if ( object != null ) {
+                Lookup.Result r = (Lookup.Result) object;
+                Collection<JpoNodeSelectionEvent> nodeSelectionEvents = r.allInstances();
+                if ( nodeSelectionEvents.isEmpty() ) {
                     LOGGER.info( "Empty result set" );
                 } else {
-                    Iterator it = infos.iterator();
+                    Iterator<JpoNodeSelectionEvent> it = nodeSelectionEvents.iterator();
                     while ( it.hasNext() ) {
-                        Object obj = it.next();
-                        LOGGER.info( "Jpo Event received: " + obj.toString() );
+                        JpoNodeSelectionEvent nodeSelectionEvent = it.next();
+                        myPanelController.show( nodeSelectionEvent.getSelectionNavigator()  );
                     }
                 }
             }

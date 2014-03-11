@@ -5,23 +5,15 @@ import org.openide.util.lookup.InstanceContent;
 
 /**
  * Class used to house anything one might want to store
- *
  * in a central lookup which can affect anything within
- *
  * the application. It can be thought of as a central context
- *
  * where any application data may be stored and watched.
  *
- *
- *
  * A singleton instance is created using @see getDefault().
- *
  * This class is as thread safe as Lookup. Lookup appears to be safe.
  *
  * @author Wade Chandler
- *
  * @version 1.0
- *
  */
 public class CentralLookup extends AbstractLookup {
 

@@ -9,11 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.logging.Logger;
+import jpo.dataModel.GroupNavigator;
 import jpo.dataModel.Settings;
 import org.dyndns.richinet.JpoApi.CentralLookup;
-import org.dyndns.richinet.JpoApi.JpoEvent;
+import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -50,9 +50,8 @@ public final class OpenJpoCollection implements ActionListener {
         File xmlFile = FileUtil.toFile( f );
         try {
             Settings.pictureCollection.fileLoad( xmlFile );
-            LOGGER.info( "Loaded the file publishing the event" );
-            JpoEvent obj = new JpoEvent();
-            centralLookup.add( obj );
+            JpoNodeSelectionEvent event = new JpoNodeSelectionEvent( new GroupNavigator( Settings.pictureCollection.getRootNode() ) );
+            centralLookup.add( event );
         } catch ( FileNotFoundException ex ) {
             Exceptions.printStackTrace( ex );
         }
