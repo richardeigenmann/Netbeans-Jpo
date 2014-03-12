@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import jpo.dataModel.GroupNavigator;
 import jpo.dataModel.Settings;
@@ -37,8 +39,6 @@ public final class OpenJpoCollection implements ActionListener {
 
     private final fileHandlerDataObject context;
 
-    private final CentralLookup centralLookup = CentralLookup.getDefault();
-
     public OpenJpoCollection( fileHandlerDataObject context ) {
         this.context = context;
         context.associateLookup();
@@ -50,8 +50,19 @@ public final class OpenJpoCollection implements ActionListener {
         File xmlFile = FileUtil.toFile( f );
         try {
             Settings.pictureCollection.fileLoad( xmlFile );
+
+            CentralLookup cl = CentralLookup.getDefault();
+                    Collection infos = cl.lookupAll( JpoNodeSelectionEvent.class );
+                    if ( !infos.isEmpty() ) {
+                        Iterator it = infos.iterator();
+                        while ( it.hasNext() ) {
+                            Object info = it.next();
+                            cl.remove( info );
+                        }
+                    }
+            
             JpoNodeSelectionEvent event = new JpoNodeSelectionEvent( new GroupNavigator( Settings.pictureCollection.getRootNode() ) );
-            centralLookup.add( event );
+            cl.add( event );
         } catch ( FileNotFoundException ex ) {
             Exceptions.printStackTrace( ex );
         }

@@ -8,11 +8,9 @@ package org.dyndns.richinet.ThumbnailPanel;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Logger;
-import jpo.dataModel.GroupNavigator;
 import jpo.gui.ThumbnailPanelController;
 import org.dyndns.richinet.JpoApi.CentralLookup;
 import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
@@ -53,13 +51,10 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
     private final ThumbnailPanelController myPanelController;
     
     public ThumbnailPanelTopComponent() {
-        LOGGER.severe( "Creating a ThumbnailPanelTopComponent" );
-        //Thread.dumpStack();
         initComponents();
         myPanelController = new ThumbnailPanelController( rootJScrollPane );
         setName( Bundle.CTL_ThumbnailPanelTopComponent() );
         setToolTipText( Bundle.HINT_ThumbnailPanelTopComponent() );
-        
     }
 
     /**
@@ -88,16 +83,14 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
     private javax.swing.JScrollPane rootJScrollPane;
     // End of variables declaration//GEN-END:variables
 
-    private Lookup.Result jpoEvent = null;
+    private Lookup.Result lookupResult = null;
     
     @Override
     public void componentOpened() {
-        Lookup.Template template = new Lookup.Template( JpoNodeSelectionEvent.class );
-        
         CentralLookup cl = CentralLookup.getDefault();
-        jpoEvent = cl.lookup( template );
-        jpoEvent.addLookupListener( new JpoNodeSelectionLookupListener() );
-        
+        Lookup.Template template = new Lookup.Template( JpoNodeSelectionEvent.class );
+        lookupResult = cl.lookup( template );
+        lookupResult.addLookupListener( new JpoNodeSelectionLookupListener() );
     }
     
     @Override
