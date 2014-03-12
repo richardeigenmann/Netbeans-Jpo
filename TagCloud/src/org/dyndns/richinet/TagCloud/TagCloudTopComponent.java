@@ -24,7 +24,7 @@ import jpo.dataModel.SortableDefaultMutableTreeNode;
 import jpo.gui.InfoPanelController;
 import jpo.gui.Jpo;
 import org.dyndns.richinet.JpoApi.CentralLookup;
-import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
+import org.dyndns.richinet.JpoApi.JpoNavigatorSelectionEvent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -103,7 +103,7 @@ public final class TagCloudTopComponent extends TopComponent {
     @Override
     public void componentOpened() {
         CentralLookup cl = CentralLookup.getDefault();
-        Lookup.Template template = new Lookup.Template( JpoNodeSelectionEvent.class );
+        Lookup.Template template = new Lookup.Template( JpoNavigatorSelectionEvent.class );
         lookupResult = cl.lookup( template );
         lookupResult.addLookupListener( new JpoNodeSelectionLookupListener() );
     }
@@ -133,14 +133,14 @@ public final class TagCloudTopComponent extends TopComponent {
             Object object = event.getSource();
             if ( object != null ) {
                 Lookup.Result r = (Lookup.Result) object;
-                Collection<JpoNodeSelectionEvent> nodeSelectionEvents = r.allInstances();
+                Collection<JpoNavigatorSelectionEvent> nodeSelectionEvents = r.allInstances();
                 if ( nodeSelectionEvents.isEmpty() ) {
                     LOGGER.info( "Empty result set" );
                 } else {
-                    Iterator<JpoNodeSelectionEvent> it = nodeSelectionEvents.iterator();
+                    Iterator<JpoNavigatorSelectionEvent> it = nodeSelectionEvents.iterator();
                     while ( it.hasNext() ) {
                         LOGGER.info( "Iterating through the nodeSelectionEvents" );
-                        JpoNodeSelectionEvent nodeSelectionEvent = it.next();
+                        JpoNavigatorSelectionEvent nodeSelectionEvent = it.next();
                         tagCloud.setMaxWordsToShow( Settings.tagCloudWords );
                         dwm = new DescriptionWordMap( nodeSelectionEvent.getSelectionNavigator() );
                         tagCloud.setWordMap( dwm );
@@ -161,22 +161,13 @@ public final class TagCloudTopComponent extends TopComponent {
             HashSet<SortableDefaultMutableTreeNode> hs = dwm.getWordNodeMap().get( key );
             ArrayList<SortableDefaultMutableTreeNode> set = new ArrayList<SortableDefaultMutableTreeNode>( hs );
             ArrayListNavigator alb = new ArrayListNavigator( key, set );
-            final JpoNodeSelectionEvent event = new JpoNodeSelectionEvent( alb );
+            final JpoNavigatorSelectionEvent event = new JpoNavigatorSelectionEvent( alb );
 
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     CentralLookup cl = CentralLookup.getDefault();
-                    Collection infos = cl.lookupAll( JpoNodeSelectionEvent.class );
-                    if ( !infos.isEmpty() ) {
-                        Iterator it = infos.iterator();
-                        while ( it.hasNext() ) {
-                            Object info = it.next();
-                            cl.remove( info );
-                        }
-                    }
-
-                    cl.add( event );
+                    cl.replace( event );
                 }
             };
             SwingUtilities.invokeLater( r );

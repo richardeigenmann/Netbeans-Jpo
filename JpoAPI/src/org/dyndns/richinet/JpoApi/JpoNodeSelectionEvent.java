@@ -5,24 +5,24 @@
  */
 package org.dyndns.richinet.JpoApi;
 
-import jpo.dataModel.NodeNavigatorInterface;
+import jpo.dataModel.SortableDefaultMutableTreeNode;
 
 /**
- * This class is passed around the Netbeans CentralLookup with the NodeNavigator
- * that allows interested subscribers to display the selected set of nodes.
+ * This class is passed around the Netbeans CentralLookup with the Node
+ * that allows interested subscribers to display stuff about the selected node
  *
  * @author Richard Eigenmann
  */
 public final class JpoNodeSelectionEvent {
 
-    private NodeNavigatorInterface nodeNavigator = null;
+    private SortableDefaultMutableTreeNode node = null;
 
-    public JpoNodeSelectionEvent( NodeNavigatorInterface nodeNavigator ) {
-        this.nodeNavigator = nodeNavigator;
+    public JpoNodeSelectionEvent( SortableDefaultMutableTreeNode nodeNavigator ) {
+        this.node = nodeNavigator;
     }
 
-    public NodeNavigatorInterface getSelectionNavigator() {
-        return nodeNavigator;
+    public SortableDefaultMutableTreeNode getSelectionNavigator() {
+        return node;
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 import jpo.gui.ThumbnailPanelController;
 import org.dyndns.richinet.JpoApi.CentralLookup;
-import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
+import org.dyndns.richinet.JpoApi.JpoNavigatorSelectionEvent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
@@ -88,7 +88,7 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
     @Override
     public void componentOpened() {
         CentralLookup cl = CentralLookup.getDefault();
-        Lookup.Template template = new Lookup.Template( JpoNodeSelectionEvent.class );
+        Lookup.Template template = new Lookup.Template( JpoNavigatorSelectionEvent.class );
         lookupResult = cl.lookup( template );
         lookupResult.addLookupListener( new JpoNodeSelectionLookupListener() );
     }
@@ -116,13 +116,13 @@ public final class ThumbnailPanelTopComponent extends TopComponent {
             Object object = event.getSource();
             if ( object != null ) {
                 Lookup.Result r = (Lookup.Result) object;
-                Collection<JpoNodeSelectionEvent> nodeSelectionEvents = r.allInstances();
+                Collection<JpoNavigatorSelectionEvent> nodeSelectionEvents = r.allInstances();
                 if ( nodeSelectionEvents.isEmpty() ) {
                     LOGGER.info( "Empty result set" );
                 } else {
-                    Iterator<JpoNodeSelectionEvent> it = nodeSelectionEvents.iterator();
+                    Iterator<JpoNavigatorSelectionEvent> it = nodeSelectionEvents.iterator();
                     while ( it.hasNext() ) {
-                        JpoNodeSelectionEvent nodeSelectionEvent = it.next();
+                        JpoNavigatorSelectionEvent nodeSelectionEvent = it.next();
                         myPanelController.show( nodeSelectionEvent.getSelectionNavigator()  );
                     }
                 }

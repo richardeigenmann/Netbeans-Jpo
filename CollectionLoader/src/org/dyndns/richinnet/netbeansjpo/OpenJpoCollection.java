@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import jpo.dataModel.GroupNavigator;
 import jpo.dataModel.Settings;
 import org.dyndns.richinet.JpoApi.CentralLookup;
-import org.dyndns.richinet.JpoApi.JpoNodeSelectionEvent;
+import org.dyndns.richinet.JpoApi.JpoNavigatorSelectionEvent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -51,18 +51,9 @@ public final class OpenJpoCollection implements ActionListener {
         try {
             Settings.pictureCollection.fileLoad( xmlFile );
 
+            JpoNavigatorSelectionEvent event = new JpoNavigatorSelectionEvent( new GroupNavigator( Settings.pictureCollection.getRootNode() ) );
             CentralLookup cl = CentralLookup.getDefault();
-                    Collection infos = cl.lookupAll( JpoNodeSelectionEvent.class );
-                    if ( !infos.isEmpty() ) {
-                        Iterator it = infos.iterator();
-                        while ( it.hasNext() ) {
-                            Object info = it.next();
-                            cl.remove( info );
-                        }
-                    }
-            
-            JpoNodeSelectionEvent event = new JpoNodeSelectionEvent( new GroupNavigator( Settings.pictureCollection.getRootNode() ) );
-            cl.add( event );
+            cl.replace( event );
         } catch ( FileNotFoundException ex ) {
             Exceptions.printStackTrace( ex );
         }
